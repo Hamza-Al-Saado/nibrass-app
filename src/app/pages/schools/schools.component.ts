@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { AddSchoolDialogComponent } from './add-school-dialog/add-school-dialog.component';
 
 interface School {
   name: string;
@@ -17,13 +19,43 @@ interface School {
   styleUrl: './schools.component.scss'
 })
 
-export class SchoolsComponent {
+export class SchoolsComponent implements OnInit {
+  constructor(private dialog: MatDialog){}
+  
   schoolsData = [
   {
     name: 'مدرسة الأمل',
     province: 'إدلب',
     city: 'معرة مصرين',
-    needs: ['6 نوافذ', '4 أبواب', '15 طاولة'],
+    needs: ['6 نوافذ', '4 أبواب', '15 طاولة', '20 كرسي', '15 طاولة', '20 كرسي'],
+    image: 'assets/school1.jpeg'
+  },
+  {
+    name: 'مدرسة النور',
+    province: 'إدلب',
+    city: 'سراقب',
+    needs: ['10 مقاعد', 'سبورة', '10 كراسي', 'مدافئ', '10 شبابيك'],
+    image: 'assets/school2.jpg'
+  },
+  {
+    name: 'مدرسة النهضة',
+    province: 'ريف دمشق',
+    city: 'حرستا',
+    needs: ['5 شبابيك', '7 طاولات'],
+    image: 'assets/school2.jpg'
+  },
+  {
+    name: 'مدرسة المتفوقين',
+    province: 'حلب',
+    city: 'صلاح الدين',
+    needs: ['22 نوافذ', '11 أبواب', '4 طاولة'],
+    image: 'assets/school1.jpeg'
+  },
+  {
+    name: 'مدرسة المنارة',
+    province: 'حلب',
+    city: 'كفر حمرة',
+    needs: ['18 نوافذ', '20 أبواب', '6 طاولة'],
     image: 'assets/school1.jpeg'
   },
   {
@@ -39,11 +71,29 @@ export class SchoolsComponent {
     city: 'حرستا',
     needs: ['5 شبابيك', '7 طاولات'],
     image: 'assets/school2.jpg'
+  },
+  {
+    name: 'مدرسة المتفوقين',
+    province: 'حلب',
+    city: 'صلاح الدين',
+    needs: ['22 نوافذ', '11 أبواب', '4 طاولة'],
+    image: 'assets/school1.jpeg'
+  },
+  {
+    name: 'مدرسة المنارة',
+    province: 'حمص',
+    city: 'باب سباع',
+    needs: ['18 نوافذ', '20 أبواب', '6 طاولة'],
+    image: 'assets/school1.jpeg'
   }
 ];
 
+  ngOnInit(): void {
+    this.filteredSchools = this.schoolsData;
+  }
+
   provinces = [...new Set(this.schoolsData.map(s => s.province))];
-  selectedProvince: string | null = null;
+  selectedProvince: string | null = "";
   filteredSchools: School[] = []; 
 
   onProvinceChange() {
@@ -70,6 +120,19 @@ export class SchoolsComponent {
           s.name.toLowerCase().includes(term) || s.city.toLowerCase().includes(term)
       );
     }
+  }
+
+  addSchool(){
+    const dialogRef = this.dialog.open(AddSchoolDialogComponent, {
+      width: 'auto',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result =>{
+      if (result) {
+        this.filteredSchools.push(result);
+        console.log('Schools', this.filteredSchools);
+      }
+    })
   }
 
 }
